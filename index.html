@@ -18,7 +18,7 @@
         /* إعدادات التصميم العامة */
         :root {
             --primary-color: #000;
-            --secondary-color: #c5a059; /* اللون الذهبي */
+            --secondary-color: #c5a059;
             --bg-color: #f8f8f8;
             --text-color: #333;
             --white: #fff;
@@ -118,7 +118,6 @@
             color: #fff;
         }
 
-        /* تم إزالة كلمة Collection حسب الطلب */
         .hero h1 { font-size: 4rem; margin-bottom: 10px; text-shadow: 2px 2px 5px rgba(0,0,0,0.8); font-weight: 900; }
         .hero p { font-size: 1.3rem; margin-bottom: 25px; font-weight: 300; }
         
@@ -135,7 +134,7 @@
         }
         .hero-btn:hover { background-color: transparent; border-color: #fff; }
 
-        /* قسم الماركات (الأقسام) - تصميم احترافي */
+        /* قسم الماركات */
         .brands-section { padding: 40px 5%; background: #fff; text-align: center; border-bottom: 1px solid #eee; }
         .section-title { font-size: 2rem; margin-bottom: 30px; position: relative; display: inline-block; color: var(--primary-color); }
         .section-title::after { content: ''; display: block; width: 60px; height: 3px; background: var(--secondary-color); margin: 10px auto 0; }
@@ -163,7 +162,6 @@
             border-radius: 4px;
         }
 
-        /* تأثير عند التحويم أو الاختيار */
         .brand-item:hover, .brand-item.active { 
             background: var(--primary-color); 
             color: #fff; 
@@ -176,7 +174,6 @@
         .products-section { padding: 60px 5%; max-width: 1300px; margin: 0 auto; min-height: 500px; }
         .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px; }
 
-        /* كرت المنتج */
         .product-card {
             background: #fff;
             border: 1px solid #eee;
@@ -219,7 +216,6 @@
             font-family: sans-serif; 
         }
 
-        /* إعادة إضافة زر التفاصيل حسب الطلب */
         .view-details-btn {
             margin-top: 15px;
             padding-top: 10px;
@@ -230,7 +226,7 @@
         }
         .product-card:hover .view-details-btn { color: var(--secondary-color); }
 
-        /* المودال (النوافذ المنبثقة) */
+        /* المودال */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px); }
         .modal-content { background: var(--white); width: 100%; max-width: 500px; border-radius: 8px; padding: 25px; position: relative; animation: slideUp 0.3s; max-height: 90vh; overflow-y: auto; }
         @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -268,8 +264,19 @@
         #map { height: 250px; width: 100%; border-radius: 4px; margin-bottom: 10px; z-index: 1; border: 1px solid #ddd; }
         .location-btn { background: #333; color: #fff; padding: 10px; width: 100%; border: none; border-radius: 4px; cursor: pointer; margin-bottom: 5px; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .status-msg { font-size: 0.85rem; margin-bottom: 15px; display: block; }
+        
+        /* مربع تفاصيل السعر النهائي */
+        .price-summary {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #eee;
+            margin: 15px 0;
+        }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem; }
+        .total-row { font-weight: bold; font-size: 1.2rem; color: var(--secondary-color); border-top: 1px solid #ddd; padding-top: 8px; margin-top: 8px; }
 
-        /* Lightbox (تكبير الصور) */
+        /* Lightbox */
         .lightbox { display: none; position: fixed; z-index: 3000; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.95); justify-content: center; align-items: center; }
         .lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 4px; }
         .lightbox-close { position: absolute; top: 20px; right: 20px; color: #fff; font-size: 2rem; cursor: pointer; }
@@ -295,7 +302,7 @@
 
     <div id="loading">
         <div class="spinner"></div>
-        <p style="color: #666; font-weight: bold;">جاري تحميل المنتجات والأقسام...</p>
+        <p style="color: #666; font-weight: bold;">جاري تحميل المنتجات...</p>
     </div>
 
     <div id="lightbox" class="lightbox" onclick="closeLightbox()">
@@ -325,16 +332,14 @@
     </header>
 
     <section class="hero">
-        <!-- تم إزالة كلمة Collection من هنا -->
         <h1>YTime</h1>
         <p>الأناقة والتميز في كل ثانية</p>
         <button class="hero-btn" onclick="scrollToProducts()">تصفح المجموعة</button>
     </section>
 
-    <!-- قسم الماركات الديناميكي -->
+    <!-- الأقسام -->
     <section class="brands-section" id="brands-anchor">
         <h2 class="section-title">ماركات عالمية</h2>
-        <!-- سيتم ملء الماركات هنا تلقائياً -->
         <div class="brand-grid" id="brands-container"></div>
     </section>
 
@@ -344,9 +349,7 @@
             <p style="color: #777;">اختر ما يناسب ذوقك الرفيع</p>
         </div>
         
-        <div class="products-grid" id="products-container">
-            <!-- المنتجات -->
-        </div>
+        <div class="products-grid" id="products-container"></div>
     </section>
 
     <footer>
@@ -366,7 +369,7 @@
         <div class="copyright"><p>جميع الحقوق محفوظة © 2024 YTime</p></div>
     </footer>
 
-    <!-- المودالات (Pop-ups) -->
+    <!-- المودالات -->
     <div id="product-modal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('product-modal')">&times;</span>
@@ -398,10 +401,12 @@
         </div>
     </div>
 
+    <!-- نافذة إتمام الطلب (محدثة) -->
     <div id="checkout-modal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('checkout-modal')">&times;</span>
-            <h2 style="margin-bottom: 20px;">إنهاء الطلب</h2>
+            <h2 style="margin-bottom: 20px;">بيانات التوصيل والدفع</h2>
+            
             <div class="form-group">
                 <label class="form-label">الاسم الكامل</label>
                 <input type="text" id="c-name" class="form-input" placeholder="اسمك الكريم">
@@ -410,17 +415,66 @@
                 <label class="form-label">رقم الهاتف</label>
                 <input type="tel" id="c-phone" class="form-input" placeholder="07xxxxxxxxx">
             </div>
-            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+
+            <!-- قائمة المحافظات وحساب التوصيل -->
             <div class="form-group">
-                <button class="location-btn" onclick="getMyLocation()"><i class="fas fa-crosshairs"></i> تحديد موقعي (GPS)</button>
+                <label class="form-label">اختر المحافظة / المدينة (لحساب التوصيل)</label>
+                <select id="c-city" class="form-input" onchange="updateOrderSummary()">
+                    <option value="" disabled selected>-- اختر المنطقة --</option>
+                    <optgroup label="توصيل 5,000 د.ع">
+                        <option value="5000">بغداد</option>
+                        <option value="5000">ديالى</option>
+                        <option value="5000">الأنبار</option>
+                        <option value="5000">الموصل (نينوى)</option>
+                        <option value="5000">كركوك</option>
+                        <option value="5000">صلاح الدين</option>
+                    </optgroup>
+                    <optgroup label="توصيل 3,000 د.ع">
+                        <option value="3000">بابل</option>
+                        <option value="3000">كربلاء</option>
+                        <option value="3000">واسط</option>
+                        <option value="3000">الديوانية (القادسية)</option>
+                        <option value="3000">ميسان</option>
+                        <option value="3000">ذي قار</option>
+                        <option value="3000">المثنى</option>
+                    </optgroup>
+                    <optgroup label="توصيل مجاني">
+                        <option value="0">مركز النجف والكوفة</option>
+                    </optgroup>
+                    <option value="5000">محافظات أخرى</option>
+                </select>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+
+            <!-- ملخص السعر النهائي -->
+            <div class="price-summary">
+                <div class="summary-row">
+                    <span>قيمة المشتريات:</span>
+                    <span id="summary-subtotal">0</span>
+                </div>
+                <div class="summary-row">
+                    <span>كلفة التوصيل:</span>
+                    <span id="summary-delivery">--</span>
+                </div>
+                <div class="summary-row total-row">
+                    <span>المبلغ الكلي للدفع:</span>
+                    <span id="summary-total">0</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <!-- تم تغيير نص الزر حسب الطلب -->
+                <button class="location-btn" onclick="getMyLocation()"><i class="fas fa-crosshairs"></i> إضغط هنا للتحديد الموقع الخاص بك تلقائيًا</button>
                 <span id="gps-status" class="status-msg"></span>
             </div>
+            
             <div class="form-group">
                 <label class="form-label">أو حدد الموقع على الخريطة:</label>
                 <div id="map"></div>
                 <span id="map-status" class="status-msg"></span>
             </div>
-            <button class="btn-gold btn-whatsapp" onclick="sendToWhatsapp()">إرسال الطلب واتساب <i class="fab fa-whatsapp"></i></button>
+            <button class="btn-gold btn-whatsapp" onclick="sendToWhatsapp()">تأكيد وإرسال عبر واتساب <i class="fab fa-whatsapp"></i></button>
         </div>
     </div>
 
@@ -432,6 +486,7 @@
         let userLocationGPS = null;
         let userMapLocation = null;
         let map, marker;
+        let cartTotalValue = 0; // لحفظ مجموع السلة الخام
         
         const sheetId = "2PACX-1vTMFYLXX8QRtMctQ5g4A21ftngOtMfKmBpbBpA7T4aDAhwKoRxYJ-JtWjRylqV1dpg0Lyjoj4JEmAJH";
         const csvUrl = `https://docs.google.com/spreadsheets/d/e/${sheetId}/pub?output=csv`;
@@ -457,12 +512,8 @@
                 complete: function(results) {
                     allProducts = results.data.map(item => {
                         const name = item.Name || item.name || item['الاسم'] || item['اسم المنتج'] || item['اسم'];
-                        
-                        // استخراج الماركة بذكاء: إما من عمود "Brand" أو الكلمة الأولى من الاسم
                         let brand = item.Brand || item.brand || item['الماركة'] || item['القسم'] || item['Brand'] || '';
-                        if (!brand && name) {
-                            brand = name.split(' ')[0]; // افتراض أول كلمة هي الماركة
-                        }
+                        if (!brand && name) brand = name.split(' ')[0];
 
                         return {
                             Name: name,
@@ -473,12 +524,9 @@
                         };
                     }).filter(p => p.Name); 
 
-                    // استخراج الماركات الفريدة
                     uniqueBrands = [...new Set(allProducts.map(p => p.Brand))];
-                    
-                    renderBrands(); // رسم أزرار الأقسام
-                    renderProducts(allProducts); // رسم كل المنتجات مبدئياً
-
+                    renderBrands();
+                    renderProducts(allProducts);
                     document.getElementById('loading').style.display = 'none';
                 },
                 error: function(err) {
@@ -487,24 +535,19 @@
             });
         }
 
-        // دالة رسم الأقسام (الماركات)
         function renderBrands() {
             const container = document.getElementById('brands-container');
             container.innerHTML = `<div class="brand-item active" onclick="filterProducts('all', this)">الكل</div>`;
-            
             uniqueBrands.forEach(brand => {
                 container.innerHTML += `<div class="brand-item" onclick="filterProducts('${brand}', this)">${brand}</div>`;
             });
         }
 
-        // دالة فلترة المنتجات
         function filterProducts(brand, element) {
-            // تحديث الأزرار النشطة
             if (element) {
                 document.querySelectorAll('.brand-item').forEach(b => b.classList.remove('active'));
                 element.classList.add('active');
             }
-
             let filtered = [];
             if (brand === 'all') {
                 filtered = allProducts;
@@ -513,9 +556,7 @@
                 filtered = allProducts.filter(p => p.Brand === brand);
                 document.getElementById('current-category-title').innerText = brand;
             }
-            
             renderProducts(filtered);
-            // تحريك الشاشة للمنتجات
             if(brand !== 'all') scrollToProducts();
         }
 
@@ -528,14 +569,10 @@
                 return;
             }
 
-            productsList.forEach((p, index) => {
-                // ملاحظة: نستخدم index من المصفوفة المفلترة، لذا نحتاج طريقة لربطها بالمصفوفة الأصلية لفتح المودال الصحيح
-                // الحل: تمرير الكائن p نفسه للمودال لاحقاً
-                
+            productsList.forEach((p) => {
                 const img = p.Image || 'https://via.placeholder.com/300?text=YTime';
                 const price = p.Price || 'السعر عند الطلب';
                 
-                // تم إعادة "اضغط للتفاصيل" هنا
                 const card = document.createElement('div');
                 card.className = 'product-card';
                 card.innerHTML = `
@@ -546,7 +583,6 @@
                         <div class="view-details-btn">اضغط للتفاصيل والطلب</div>
                     </div>
                 `;
-                // إضافة حدث النقر يدوياً لتمرير المنتج الصحيح
                 card.onclick = () => openProductDetails(p);
                 container.appendChild(card);
             });
@@ -596,7 +632,7 @@
         function openCart() {
             const container = document.getElementById('cart-items');
             container.innerHTML = '';
-            let total = 0;
+            cartTotalValue = 0;
 
             if (cart.length === 0) {
                 container.innerHTML = '<p style="text-align:center; padding:20px; color:#777;">سلتك فارغة حالياً</p>';
@@ -605,7 +641,7 @@
             cart.forEach((item, index) => {
                 let priceClean = item.product.Price ? item.product.Price.replace(/[^0-9.]/g, '') : "0"; 
                 let itemTotal = parseFloat(priceClean) * item.qty;
-                if(!isNaN(itemTotal)) total += itemTotal;
+                if(!isNaN(itemTotal)) cartTotalValue += itemTotal;
 
                 const img = item.product.Image || 'https://via.placeholder.com/50';
 
@@ -622,7 +658,7 @@
                 `;
             });
 
-            document.getElementById('cart-total-price').innerText = total.toLocaleString();
+            document.getElementById('cart-total-price').innerText = cartTotalValue.toLocaleString();
             document.getElementById('cart-modal').style.display = 'flex';
         }
 
@@ -635,8 +671,27 @@
         function openCheckout() {
             if (cart.length === 0) return alert('السلة فارغة');
             closeModal('cart-modal');
+            
+            // تهيئة بيانات السعر في المودال
+            document.getElementById('summary-subtotal').innerText = cartTotalValue.toLocaleString() + " د.ع";
+            document.getElementById('summary-delivery').innerText = "--";
+            document.getElementById('summary-total').innerText = cartTotalValue.toLocaleString() + " د.ع";
+            document.getElementById('c-city').selectedIndex = 0; // تصفير الاختيار
+
             document.getElementById('checkout-modal').style.display = 'flex';
             setTimeout(() => { if (!map) initMap(); map.invalidateSize(); }, 300);
+        }
+
+        // دالة تحديث السعر عند اختيار المحافظة
+        function updateOrderSummary() {
+            const citySelect = document.getElementById('c-city');
+            const deliveryCost = parseInt(citySelect.value);
+            
+            if (!isNaN(deliveryCost)) {
+                const total = cartTotalValue + deliveryCost;
+                document.getElementById('summary-delivery').innerText = deliveryCost === 0 ? "مجاني" : deliveryCost.toLocaleString() + " د.ع";
+                document.getElementById('summary-total').innerText = total.toLocaleString() + " د.ع";
+            }
         }
 
         function getMyLocation() {
@@ -678,18 +733,24 @@
         function sendToWhatsapp() {
             const name = document.getElementById('c-name').value;
             const phone = document.getElementById('c-phone').value;
+            const citySelect = document.getElementById('c-city');
+            
             if (!name || !phone) return alert('يرجى كتابة الاسم ورقم الهاتف');
+            if (citySelect.selectedIndex === 0) return alert('يرجى اختيار المحافظة لحساب التوصيل');
+
+            const cityName = citySelect.options[citySelect.selectedIndex].text;
+            const deliveryCost = citySelect.value === "0" ? "مجاني" : parseInt(citySelect.value).toLocaleString() + " د.ع";
+            const finalTotal = document.getElementById('summary-total').innerText;
 
             let message = `*طلب جديد من موقع YTime* %0A---------------------------%0A`;
-            message += `👤 *الاسم:* ${name} %0A📱 *الهاتف:* ${phone} %0A---------------------------%0A🛒 *الطلبية:* %0A`;
-
-            let totalPrice = document.getElementById('cart-total-price').innerText;
+            message += `👤 *الاسم:* ${name} %0A📱 *الهاتف:* ${phone} %0A`;
+            message += `🏙️ *المنطقة:* ${cityName} (توصيل: ${deliveryCost}) %0A---------------------------%0A🛒 *الطلبية:* %0A`;
 
             cart.forEach(item => {
                 message += `▪️ ${item.product.Name} (العدد: ${item.qty}) %0A🔗 صورة: ${item.product.Image} %0A%0A`;
             });
 
-            message += `---------------------------%0A💰 *المجموع:* ${totalPrice} د.ع %0A`;
+            message += `---------------------------%0A💰 *المجموع الكلي (مع التوصيل):* ${finalTotal} %0A`;
             if (userLocationGPS) message += `📍 *موقع الزبون (GPS):* %0A ${userLocationGPS} %0A`;
             if (userMapLocation) message += `🎁 *موقع الهدية (الخريطة):* %0A ${userMapLocation} %0A`;
 
