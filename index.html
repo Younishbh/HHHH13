@@ -451,4 +451,379 @@
                     <optgroup label="توصيل 5,000 د.ع">
                         <option value="5000">بغداد</option>
                         <option value="5000">ديالى</option>
+                        <option value="5000">الأنبار</option>
+                        <option value="5000">الموصل (نينوى)</option>
+                        <option value="5000">كركوك</option>
+                        <option value="5000">صلاح الدين</option>
+                    </optgroup>
+                    <optgroup label="توصيل 3,000 د.ع">
+                        <option value="3000">بابل</option>
+                        <option value="3000">كربلاء</option>
+                        <option value="3000">واسط</option>
+                        <option value="3000">الديوانية (القادسية)</option>
+                        <option value="3000">ميسان</option>
+                        <option value="3000">ذي قار</option>
+                        <option value="3000">المثنى</option>
+                    </optgroup>
+                    <optgroup label="توصيل مجاني">
+                        <option value="0">مركز النجف والكوفة</option>
+                    </optgroup>
+                    <option value="5000">محافظات أخرى</option>
+                </select>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+
+            <div class="price-summary">
+                <div class="summary-row"><span>قيمة المشتريات:</span><span id="summary-subtotal">0</span></div>
+                <div class="summary-row"><span>كلفة التوصيل:</span><span id="summary-delivery">--</span></div>
+                <div class="summary-row total-row"><span>المبلغ الكلي للدفع:</span><span id="summary-total">0</span></div>
+            </div>
+
+            <div class="form-group">
+                <div class="note-header">ملاحظة: أختار واحد منهم</div>
                 
+                <button class="location-btn" onclick="getMyLocation()"><i class="fas fa-crosshairs"></i> إضغط هنا للتحديد الموقع الخاص بك تلقائيًا</button>
+                <span id="gps-status" class="status-msg"></span>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">أو حدد الموقع على الخريطة:</label>
+                <div id="map"></div>
+                <span id="map-status" class="status-msg"></span>
+                
+                <div class="note-footer">
+                    • ان كان الطلب هدية حدد موقع الشخص المستلم.<br>
+                    • ان كان الطلب لك كذلك حدد عَ الخريطة ان كان الخيار الأول (تحديد الموقع تلقائيًا) غير فعال معك.
+                </div>
+            </div>
+            <button class="btn-gold btn-whatsapp" onclick="sendToWhatsapp()">تأكيد وإرسال عبر واتساب <i class="fab fa-whatsapp"></i></button>
+        </div>
+    </div>
+
+    <script>
+        let allProducts = [];
+        let uniqueBrands = [];
+        let cart = [];
+        let currentModalProduct = null;
+        let selectedModalImage = null; // الصورة المختارة في المودال
+        let userLocationGPS = null;
+        let userMapLocation = null;
+        let map, marker;
+        let cartTotalValue = 0;
+        
+        const sheetId = "2PACX-1vTMFYLXX8QRtMctQ5g4A21ftngOtMfKmBpbBpA7T4aDAhwKoRxYJ-JtWjRylqV1dpg0Lyjoj4JEmAJH";
+        const csvUrl = `https://docs.google.com/spreadsheets/d/e/${sheetId}/pub?output=csv`;
+
+        function scrollToProducts() {
+            document.getElementById('products-anchor').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function openLightbox(src) {
+            document.getElementById('lightbox-img').src = src;
+            document.getElementById('lightbox').style.display = 'flex';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').style.display = 'none';
+        }
+
+        function init() {
+            Papa.parse(csvUrl, {
+                download: true,
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    allProducts = results.data.map(item => {
+                        const name = item.Name || item.name || item['الاسم'] || item['اسم المنتج'] || item['اسم'];
+                        let brand = item.Brand || item.brand || item['الماركة'] || item['القسم'] || item['Brand'] || '';
+                        if (!brand && name) brand = name.split(' ')[0];
+
+                        // معالجة الصور المتعددة
+                        let rawImages = item.Image || item.image || item['الصورة'] || item['رابط الصورة'] || item['صورة'] || '';
+                        // تقسيم الصور بفاصلة
+                        let imagesArray = rawImages.split(',').map(url => url.trim()).filter(url => url.length > 0);
+
+                        return {
+                            Name: name,
+                            Price: item.Price || item.price || item['السعر'] || item['سعر'],
+                            Images: imagesArray, // مصفوفة الصور
+                            MainImage: imagesArray.length > 0 ? imagesArray[0] : 'https://via.placeholder.com/300?text=YTime',
+                            Description: item.Description || item.description || item['الوصف'] || item['تفاصيل'] || '',
+                            Brand: brand ? brand.toUpperCase() : 'GENERAL'
+                        };
+                    }).filter(p => p.Name); 
+
+                    uniqueBrands = [...new Set(allProducts.map(p => p.Brand))];
+                    renderBrands();
+                    renderProducts(allProducts);
+                    document.getElementById('loading').style.display = 'none';
+                },
+                error: function(err) {
+                    document.getElementById('loading').innerHTML = '<p style="color:red; text-align:center">فشل الاتصال بالبيانات</p>';
+                }
+            });
+        }
+
+        function renderBrands() {
+            const container = document.getElementById('brands-container');
+            container.innerHTML = `<div class="brand-item active" onclick="filterProducts('all', this)">الكل</div>`;
+            uniqueBrands.forEach(brand => {
+                container.innerHTML += `<div class="brand-item" onclick="filterProducts('${brand}', this)">${brand}</div>`;
+            });
+        }
+
+        function filterProducts(brand, element) {
+            if (element) {
+                document.querySelectorAll('.brand-item').forEach(b => b.classList.remove('active'));
+                element.classList.add('active');
+            }
+            let filtered = [];
+            if (brand === 'all') {
+                filtered = allProducts;
+                document.getElementById('current-category-title').innerText = "جميع المنتجات";
+            } else {
+                filtered = allProducts.filter(p => p.Brand === brand);
+                document.getElementById('current-category-title').innerText = brand;
+            }
+            renderProducts(filtered);
+            if(brand !== 'all') scrollToProducts();
+        }
+
+        function renderProducts(productsList) {
+            const container = document.getElementById('products-container');
+            container.innerHTML = '';
+            
+            if (productsList.length === 0) {
+                container.innerHTML = '<p style="text-align:center; width:100%;">لا توجد منتجات في هذا القسم حالياً</p>';
+                return;
+            }
+
+            productsList.forEach((p) => {
+                const img = p.MainImage;
+                const price = p.Price || 'السعر عند الطلب';
+                
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <img src="${img}" class="product-img" onerror="this.src='https://via.placeholder.com/300?text=No+Image'">
+                    <div class="product-info">
+                        <h3 class="product-title">${p.Name}</h3>
+                        <div class="product-price">${price}</div>
+                        <div class="view-details-btn">اضغط للتفاصيل والطلب</div>
+                    </div>
+                `;
+                card.onclick = () => openProductDetails(p);
+                container.appendChild(card);
+            });
+        }
+
+        function openProductDetails(product) {
+            currentModalProduct = product;
+            selectedModalImage = product.MainImage; // تعيين الصورة الافتراضية
+            
+            document.getElementById('m-img').src = selectedModalImage;
+            document.getElementById('m-title').innerText = currentModalProduct.Name;
+            document.getElementById('m-price').innerText = currentModalProduct.Price || '';
+            document.getElementById('m-desc').innerText = currentModalProduct.Description || 'ساعة فاخرة أصلية مع ضمان الجودة.';
+            document.getElementById('m-qty').value = 1;
+            
+            // إنشاء الصور المصغرة
+            const thumbsContainer = document.getElementById('m-thumbnails');
+            thumbsContainer.innerHTML = '';
+            
+            if (product.Images.length > 1) {
+                product.Images.forEach(imgUrl => {
+                    const thumb = document.createElement('img');
+                    thumb.src = imgUrl;
+                    thumb.className = 'thumbnail';
+                    if(imgUrl === selectedModalImage) thumb.classList.add('active');
+                    
+                    thumb.onclick = function() {
+                        // تغيير الصورة الرئيسية
+                        document.getElementById('m-img').src = imgUrl;
+                        selectedModalImage = imgUrl; // تحديث الصورة المختارة
+                        
+                        // تحديث الستايل
+                        document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+                        this.classList.add('active');
+                    };
+                    thumbsContainer.appendChild(thumb);
+                });
+            }
+
+            document.getElementById('product-modal').style.display = 'flex';
+        }
+
+        function updateModalQty(change) {
+            const input = document.getElementById('m-qty');
+            let val = parseInt(input.value) + change;
+            if (val < 1) val = 1;
+            input.value = val;
+        }
+
+        function addToCartFromModal() {
+            const qty = parseInt(document.getElementById('m-qty').value);
+            
+            // البحث عن منتج بنفس الاسم ونفس الصورة (اللون)
+            const existingItem = cart.find(item => 
+                item.product.Name === currentModalProduct.Name && 
+                item.selectedImage === selectedModalImage
+            );
+
+            if (existingItem) {
+                existingItem.qty += qty;
+            } else {
+                cart.push({ 
+                    product: currentModalProduct, 
+                    qty: qty,
+                    selectedImage: selectedModalImage // حفظ الصورة المختارة (اللون)
+                });
+            }
+
+            updateCartUI();
+            closeModal('product-modal');
+            const cartIcon = document.querySelector('.cart-icon-container');
+            cartIcon.style.color = '#c5a059';
+            setTimeout(() => { cartIcon.style.color = '#000'; }, 500);
+        }
+
+        function updateCartUI() {
+            document.getElementById('cart-count').innerText = cart.length;
+        }
+
+        function openCart() {
+            const container = document.getElementById('cart-items');
+            container.innerHTML = '';
+            cartTotalValue = 0;
+
+            if (cart.length === 0) {
+                container.innerHTML = '<p style="text-align:center; padding:20px; color:#777;">سلتك فارغة حالياً</p>';
+            }
+
+            cart.forEach((item, index) => {
+                let priceClean = item.product.Price ? item.product.Price.replace(/[^0-9.]/g, '') : "0"; 
+                let itemTotal = parseFloat(priceClean) * item.qty;
+                if(!isNaN(itemTotal)) cartTotalValue += itemTotal;
+
+                // استخدام الصورة المختارة
+                const img = item.selectedImage || 'https://via.placeholder.com/50';
+
+                container.innerHTML += `
+                    <div class="cart-item">
+                        <img src="${img}" class="cart-item-img" onerror="this.src='https://via.placeholder.com/50'">
+                        <div class="cart-info">
+                            <div class="cart-item-title">${item.product.Name}</div>
+                            <div class="cart-item-price">${item.product.Price}</div>
+                            <div style="font-size:0.85rem; color:#555;">العدد: ${item.qty}</div>
+                        </div>
+                        <div onclick="removeFromCart(${index})" class="delete-btn"><i class="fas fa-trash-alt"></i></div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('cart-total-price').innerText = cartTotalValue.toLocaleString();
+            document.getElementById('cart-modal').style.display = 'flex';
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            openCart();
+            updateCartUI();
+        }
+
+        function openCheckout() {
+            if (cart.length === 0) return alert('السلة فارغة');
+            closeModal('cart-modal');
+            
+            document.getElementById('summary-subtotal').innerText = cartTotalValue.toLocaleString() + " د.ع";
+            document.getElementById('summary-delivery').innerText = "--";
+            document.getElementById('summary-total').innerText = cartTotalValue.toLocaleString() + " د.ع";
+            document.getElementById('c-city').selectedIndex = 0;
+
+            document.getElementById('checkout-modal').style.display = 'flex';
+            setTimeout(() => { if (!map) initMap(); map.invalidateSize(); }, 300);
+        }
+
+        function updateOrderSummary() {
+            const citySelect = document.getElementById('c-city');
+            const deliveryCost = parseInt(citySelect.value);
+            
+            if (!isNaN(deliveryCost)) {
+                const total = cartTotalValue + deliveryCost;
+                document.getElementById('summary-delivery').innerText = deliveryCost === 0 ? "مجاني" : deliveryCost.toLocaleString() + " د.ع";
+                document.getElementById('summary-total').innerText = total.toLocaleString() + " د.ع";
+            }
+        }
+
+        function getMyLocation() {
+            const status = document.getElementById('gps-status');
+            status.innerText = "جاري تحديد الموقع...";
+            status.style.color = "orange";
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    userLocationGPS = `https://www.google.com/maps?q=${lat},${lng}`;
+                    status.innerText = "✅ تم تحديد موقعك الحالي بنجاح";
+                    status.style.color = "green";
+                }, () => {
+                    status.innerText = "❌ تعذر تحديد الموقع، تأكد من تفعيل الـ GPS";
+                    status.style.color = "red";
+                });
+            } else { status.innerText = "المتصفح لا يدعم الميزة"; }
+        }
+
+        function initMap() {
+            map = L.map('map').setView([33.3128, 44.3615], 10);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
+            marker = L.marker([33.3128, 44.3615], {draggable: true}).addTo(map);
+            marker.on('dragend', function(event) {
+                var position = marker.getLatLng();
+                userMapLocation = `https://www.google.com/maps?q=${position.lat},${position.lng}`;
+                document.getElementById('map-status').innerText = "✅ تم تحديد موقع الهدية";
+                document.getElementById('map-status').style.color = "green";
+            });
+            map.on('click', function(e) {
+                marker.setLatLng(e.latlng);
+                userMapLocation = `https://www.google.com/maps?q=${e.latlng.lat},${e.latlng.lng}`;
+                document.getElementById('map-status').innerText = "✅ تم تحديد موقع الهدية";
+                document.getElementById('map-status').style.color = "green";
+            });
+        }
+
+        function sendToWhatsapp() {
+            const name = document.getElementById('c-name').value;
+            const phone = document.getElementById('c-phone').value;
+            const citySelect = document.getElementById('c-city');
+            
+            if (!name || !phone) return alert('يرجى كتابة الاسم ورقم الهاتف');
+            if (citySelect.selectedIndex === 0) return alert('يرجى اختيار المحافظة لحساب التوصيل');
+
+            const cityName = citySelect.options[citySelect.selectedIndex].text;
+            const deliveryCost = citySelect.value === "0" ? "مجاني" : parseInt(citySelect.value).toLocaleString() + " د.ع";
+            const finalTotal = document.getElementById('summary-total').innerText;
+
+            let message = `*طلب جديد من موقع YTime* %0A---------------------------%0A`;
+            message += `👤 *الاسم:* ${name} %0A📱 *الهاتف:* ${phone} %0A`;
+            message += `🏙️ *المنطقة:* ${cityName} (توصيل: ${deliveryCost}) %0A---------------------------%0A🛒 *الطلبية:* %0A`;
+
+            cart.forEach(item => {
+                message += `▪️ ${item.product.Name} (العدد: ${item.qty}) %0A🔗 اللون المختار: ${item.selectedImage} %0A%0A`;
+            });
+
+            message += `---------------------------%0A💰 *المجموع الكلي (مع التوصيل):* ${finalTotal} %0A`;
+            if (userLocationGPS) message += `📍 *موقع الزبون (GPS):* %0A ${userLocationGPS} %0A`;
+            if (userMapLocation) message += `🎁 *موقع الهدية (الخريطة):* %0A ${userMapLocation} %0A`;
+
+            const whatsappNumber = "9647858644168"; 
+            window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
+        }
+
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        window.onclick = function(event) { if (event.target.classList.contains('modal')) event.target.style.display = "none"; }
+
+        init();
+    </script>
+</body>
+</html>
