@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>YTime - الفخامة والأناقة</title>
+    <title>YTime - ساعات فاخرة</title>
     
     <!-- خطوط وأيقونات -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- مكتبات (Google Sheet + Maps) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
@@ -15,11 +15,13 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <style>
-        /* --- 1. التصميم الأساسي (الفاخر) --- */
+        /* =========================================
+           1. تصميم الموقع الفاخر
+           ========================================= */
         :root {
             --primary-color: #000; /* أسود */
             --secondary-color: #c5a059; /* ذهبي */
-            --bg-color: #f9f9f9;
+            --bg-color: #f8f8f8;
             --text-color: #333;
             --white: #fff;
         }
@@ -35,13 +37,14 @@
 
         a { text-decoration: none; color: inherit; transition: 0.3s; }
         ul { list-style: none; padding: 0; margin: 0; }
+        * { box-sizing: border-box; }
 
         /* الشريط العلوي */
         .top-bar {
             background-color: #111;
-            color: #ccc;
+            color: #ddd;
             padding: 8px 5%;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             display: flex;
             justify-content: space-between;
             border-bottom: 1px solid #333;
@@ -75,25 +78,17 @@
         
         .logo span { color: var(--secondary-color); }
 
-        .nav-links {
-            display: flex;
-            gap: 25px;
-        }
-
-        .nav-links li a {
-            font-weight: 700;
-            font-size: 1rem;
-            color: #444;
-        }
-
+        .nav-links { display: flex; gap: 25px; }
+        .nav-links li a { font-weight: 700; font-size: 1rem; color: #444; }
         .nav-links li a:hover { color: var(--secondary-color); }
 
         /* أيقونة السلة */
         .cart-icon-container {
             position: relative;
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             cursor: pointer;
             margin-right: 15px;
+            color: var(--primary-color);
         }
         
         .cart-count {
@@ -103,8 +98,8 @@
             background: var(--secondary-color);
             color: #fff;
             font-size: 0.75rem;
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -114,7 +109,7 @@
 
         /* Hero Section (البنر) */
         .hero {
-            background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');
+            background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');
             background-size: cover;
             background-position: center;
             height: 450px;
@@ -126,17 +121,19 @@
             color: #fff;
         }
 
-        .hero h1 { font-size: 3.5rem; margin-bottom: 15px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        .hero h1 { font-size: 3.5rem; margin-bottom: 10px; text-shadow: 2px 2px 5px rgba(0,0,0,0.8); }
         .hero p { font-size: 1.3rem; margin-bottom: 25px; font-weight: 300; }
         
         .hero-btn {
             background-color: var(--secondary-color);
             color: #fff;
-            padding: 12px 35px;
+            padding: 12px 40px;
             border-radius: 0;
             font-weight: bold;
             font-size: 1.1rem;
             border: 2px solid var(--secondary-color);
+            cursor: pointer;
+            transition: 0.3s;
         }
         .hero-btn:hover { background-color: transparent; border-color: #fff; }
 
@@ -145,66 +142,57 @@
         .section-title { font-size: 2rem; margin-bottom: 30px; position: relative; display: inline-block; color: var(--primary-color); }
         .section-title::after { content: ''; display: block; width: 60px; height: 3px; background: var(--secondary-color); margin: 10px auto 0; }
         .brand-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
-        .brand-item { padding: 10px 25px; border: 1px solid #ddd; color: #555; font-weight: bold; font-family: sans-serif; letter-spacing: 1px; transition: 0.3s; }
+        .brand-item { padding: 10px 25px; border: 1px solid #ddd; color: #555; font-weight: bold; font-family: sans-serif; letter-spacing: 1px; transition: 0.3s; cursor: pointer; }
         .brand-item:hover { background: var(--primary-color); color: #fff; border-color: var(--primary-color); }
 
-        /* --- 2. تنسيق المنتجات --- */
+        /* شبكة المنتجات */
         .products-section { padding: 60px 5%; max-width: 1300px; margin: 0 auto; }
-        
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 30px;
-        }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px; }
 
         .product-card {
             background: #fff;
-            border-radius: 0; /* حواف حادة للتصميم الفاخر */
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border: 1px solid #eee;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
             transition: transform 0.3s, box-shadow 0.3s;
             cursor: pointer;
             position: relative;
-            border: 1px solid #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            border-radius: 4px;
+            overflow: hidden;
         }
 
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-        }
-
-        .product-img {
-            width: 100%;
-            height: 280px;
-            object-fit: cover;
-            background-color: #f5f5f5;
-            transition: 0.3s;
-        }
-
-        .product-info { padding: 20px; text-align: center; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .product-img { width: 100%; height: 280px; object-fit: cover; background-color: #f5f5f5; }
         
-        .product-title {
-            font-size: 1.1rem;
-            margin: 0 0 10px;
-            color: var(--primary-color);
-            font-weight: 700;
+        .product-info { 
+            padding: 15px; 
+            text-align: center; 
+            flex-grow: 1; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between; 
         }
-
-        .product-price {
-            color: var(--secondary-color);
-            font-size: 1.2rem;
-            font-weight: bold;
-            font-family: sans-serif;
+        
+        .product-title { 
+            font-size: 1.1rem; 
+            margin: 0 0 8px; 
+            color: var(--primary-color); 
+            font-weight: 700; 
         }
-
-        .view-btn {
-            margin-top: 15px;
-            font-size: 0.9rem;
-            color: #777;
-            text-decoration: underline;
+        
+        .product-price { 
+            color: var(--secondary-color); 
+            font-size: 1.2rem; 
+            font-weight: bold; 
+            font-family: sans-serif; 
         }
+        
+        /* تم حذف الكتابة الزائدة من هنا حسب الطلب */
 
-        /* --- 3. النوافذ المنبثقة (Modals) --- */
+        /* =========================================
+           2. تنسيقات النوافذ المنبثقة (Modals)
+           ========================================= */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px); }
         .modal-content { background: var(--white); width: 100%; max-width: 500px; border-radius: 8px; padding: 25px; position: relative; animation: slideUp 0.3s; max-height: 90vh; overflow-y: auto; }
         @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -212,8 +200,8 @@
         .close-btn { position: absolute; left: 20px; top: 15px; font-size: 1.8rem; color: #aaa; cursor: pointer; transition: 0.2s; }
         .close-btn:hover { color: #000; }
         
-        /* تفاصيل المودال */
-        .modal-img { width: 100%; height: 350px; object-fit: cover; border-radius: 4px; margin-bottom: 20px; }
+        /* تفاصيل المنتج داخل المودال */
+        .modal-img { width: 100%; height: 350px; object-fit: cover; border-radius: 4px; margin-bottom: 20px; cursor: zoom-in; /* إشارة للمستخدم بإمكانية التكبير */ }
         .modal-title { font-size: 1.6rem; color: #000; margin-bottom: 10px; }
         .modal-price { font-size: 1.5rem; color: var(--secondary-color); font-weight: bold; margin-bottom: 15px; }
         .modal-desc { color: #666; line-height: 1.6; margin-bottom: 25px; font-size: 1rem; border-bottom: 1px solid #eee; padding-bottom: 15px; }
@@ -224,29 +212,58 @@
         .qty-btn { width: 40px; height: 40px; background: #fff; border: none; font-size: 1.2rem; cursor: pointer; color: #333; }
         .qty-input { width: 50px; text-align: center; border: none; font-size: 1.2rem; font-weight: bold; outline: none; }
         
+        /* أزرار ذهبية */
         .btn-gold {
             background: var(--secondary-color); color: #fff; width: 100%; padding: 15px; border: none; 
             font-size: 1.1rem; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 1px;
-            transition: 0.3s;
+            transition: 0.3s; border-radius: 4px; display: flex; justify-content: center; align-items: center; gap: 10px;
         }
         .btn-gold:hover { background: #000; }
+        .btn-whatsapp { background: #25D366; }
+        .btn-whatsapp:hover { background: #128c7e; }
 
         /* السلة */
         .cart-item { display: flex; gap: 15px; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
         .cart-item-img { width: 70px; height: 70px; object-fit: cover; border-radius: 4px; }
         .cart-info { flex-grow: 1; }
-        .cart-item-title { font-weight: bold; margin-bottom: 5px; }
-        .cart-item-price { color: var(--secondary-color); }
-        .delete-btn { color: #cc0000; cursor: pointer; align-self: center; }
+        .cart-item-title { font-weight: bold; margin-bottom: 5px; font-size: 0.95rem; }
+        .cart-item-price { color: var(--secondary-color); font-weight: bold; }
+        .delete-btn { color: #cc0000; cursor: pointer; align-self: center; font-size: 1.1rem; padding: 5px; }
 
-        /* Checkout & Map */
+        /* نموذج الطلب والخريطة */
         .form-group { margin-bottom: 15px; }
         .form-label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 0.9rem; }
         .form-input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 1rem; font-family: 'Cairo'; box-sizing: border-box; }
         
         #map { height: 250px; width: 100%; border-radius: 4px; margin-bottom: 10px; z-index: 1; border: 1px solid #ddd; }
-        .location-btn { background: #333; color: #fff; padding: 10px; width: 100%; border: none; cursor: pointer; margin-bottom: 5px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .status-msg { font-size: 0.85rem; color: green; margin-bottom: 15px; display: block; }
+        .location-btn { background: #333; color: #fff; padding: 10px; width: 100%; border: none; border-radius: 4px; cursor: pointer; margin-bottom: 5px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .status-msg { font-size: 0.85rem; margin-bottom: 15px; display: block; }
+
+        /* Lightbox لتكبير الصور */
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 3000;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.95);
+            justify-content: center;
+            align-items: center;
+        }
+        .lightbox img {
+            max-width: 95%;
+            max-height: 95%;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #fff;
+            font-size: 2rem;
+            cursor: pointer;
+        }
 
         /* Footer */
         footer { background-color: #1a1a1a; color: #aaa; padding: 60px 5% 20px; margin-top: 50px; }
@@ -256,17 +273,18 @@
         .footer-col ul li a:hover { color: var(--secondary-color); }
         .copyright { text-align: center; border-top: 1px solid #333; padding-top: 20px; margin-top: 50px; font-size: 0.9rem; }
 
-        /* Loading Spinner */
+        /* شاشة التحميل */
         #loading { position: fixed; top:0; left:0; width:100%; height:100%; background: #fff; z-index:9999; display:flex; justify-content:center; align-items:center; flex-direction:column; }
         .spinner { border: 4px solid #f3f3f3; border-top: 4px solid var(--secondary-color); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin-bottom: 15px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* تجاوب للموبايل */
+        /* للموبايل */
         @media (max-width: 768px) {
-            .nav-links { display: none; } /* إخفاء الروابط في الموبايل لتبسيط التصميم */
-            .hero h1 { font-size: 2.2rem; }
+            .nav-links { display: none; }
+            .hero h1 { font-size: 2rem; }
             .hero p { font-size: 1rem; }
             .section-title { font-size: 1.5rem; }
+            .modal-content { max-height: 85vh; padding: 15px; }
         }
     </style>
 </head>
@@ -275,12 +293,18 @@
     <!-- شاشة التحميل -->
     <div id="loading">
         <div class="spinner"></div>
-        <p style="color: #666;">جاري تحميل أحدث الساعات...</p>
+        <p style="color: #666; font-weight: bold;">جاري تجهيز المتجر...</p>
+    </div>
+
+    <!-- نافذة تكبير الصورة (Lightbox) -->
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <span class="lightbox-close">&times;</span>
+        <img id="lightbox-img" src="" alt="Zoomed Image">
     </div>
 
     <!-- الشريط العلوي -->
     <div class="top-bar">
-        <span>مرحباً بكم في YTime للساعات الفاخرة</span>
+        <span>أهلاً بكم في YTime - عنوان الفخامة</span>
         <div><i class="fab fa-instagram"></i> <i class="fab fa-facebook-f"></i></div>
     </div>
 
@@ -308,7 +332,7 @@
     <section class="hero">
         <h1>YTime Collection</h1>
         <p>الأناقة والتميز في كل ثانية</p>
-        <button class="hero-btn" onclick="scrollToProducts()">تسوق الآن</button>
+        <button class="hero-btn" onclick="scrollToProducts()">تصفح المجموعة</button>
     </section>
 
     <!-- قسم الماركات -->
@@ -372,7 +396,8 @@
     <div id="product-modal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('product-modal')">&times;</span>
-            <img id="m-img" src="" class="modal-img">
+            <!-- تم إضافة دالة فتح التكبير عند الضغط على الصورة -->
+            <img id="m-img" src="" class="modal-img" onclick="openLightbox(this.src)" title="اضغط للتكبير">
             <h2 id="m-title" class="modal-title"></h2>
             <div id="m-price" class="modal-price"></div>
             <p id="m-desc" class="modal-desc"></p>
@@ -441,13 +466,13 @@
                 <span id="map-status" class="status-msg"></span>
             </div>
 
-            <button class="btn-gold" style="background: #25D366; color: #fff;" onclick="sendToWhatsapp()">
+            <button class="btn-gold btn-whatsapp" onclick="sendToWhatsapp()">
                 إرسال الطلب عبر واتساب <i class="fab fa-whatsapp"></i>
             </button>
         </div>
     </div>
 
-    <!-- الكود البرمجي -->
+    <!-- الكود البرمجي (Javascript Logic) -->
     <script>
         // المتغيرات
         let allProducts = [];
@@ -465,7 +490,19 @@
             document.getElementById('products-anchor').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // تشغيل التطبيق
+        // دالة تكبير الصورة (Lightbox)
+        function openLightbox(src) {
+            const lightbox = document.getElementById('lightbox');
+            const img = document.getElementById('lightbox-img');
+            img.src = src;
+            lightbox.style.display = 'flex';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').style.display = 'none';
+        }
+
+        // تشغيل التطبيق وجلب البيانات
         function init() {
             Papa.parse(csvUrl, {
                 download: true,
@@ -481,46 +518,43 @@
                         };
                     }).filter(p => p.Name); 
 
-                    if (allProducts.length === 0) {
-                        alert("تنبيه: لم يتم العثور على منتجات. تأكد من أسماء الأعمدة في ملف Excel.");
-                    }
-
-                    renderProducts();
                     document.getElementById('loading').style.display = 'none';
+
+                    if (allProducts.length === 0) {
+                        alert("تنبيه: لم يتم العثور على منتجات في الملف.");
+                    } else {
+                        renderProducts();
+                    }
                 },
                 error: function(err) {
-                    document.getElementById('loading').innerHTML = '<p style="color:red">حدث خطأ في الاتصال بالبيانات</p>';
+                    document.getElementById('loading').innerHTML = '<p style="color:red; text-align:center">فشل الاتصال بالبيانات.<br>يرجى التأكد من الانترنت.</p>';
                 }
             });
         }
 
+        // عرض المنتجات
         function renderProducts() {
             const container = document.getElementById('products-container');
             container.innerHTML = '';
             
-            if (allProducts.length === 0) {
-                container.innerHTML = '<p style="text-align:center; width:100%; grid-column:1/-1;">لا توجد منتجات حالياً</p>';
-                return;
-            }
-
             allProducts.forEach((p, index) => {
                 const img = p.Image || 'https://via.placeholder.com/300?text=YTime';
                 const price = p.Price || 'السعر عند الطلب';
                 
+                // تم إزالة الكتابة الزائدة هنا
                 container.innerHTML += `
                     <div class="product-card" onclick="openProductDetails(${index})">
-                        <img src="${img}" class="product-img" onerror="this.src='https://via.placeholder.com/300?text=Error'">
+                        <img src="${img}" class="product-img" onerror="this.src='https://via.placeholder.com/300?text=No+Image'">
                         <div class="product-info">
                             <h3 class="product-title">${p.Name}</h3>
                             <div class="product-price">${price}</div>
-                            <div class="view-btn">اضغط للتفاصيل والطلب</div>
                         </div>
                     </div>
                 `;
             });
         }
 
-        // المودال
+        // فتح المودال (تفاصيل المنتج)
         function openProductDetails(index) {
             currentModalProduct = allProducts[index];
             const imgUrl = currentModalProduct.Image || 'https://via.placeholder.com/300?text=YTime';
@@ -541,7 +575,7 @@
             input.value = val;
         }
 
-        // السلة
+        // إدارة السلة
         function addToCartFromModal() {
             const qty = parseInt(document.getElementById('m-qty').value);
             const existingItem = cart.find(item => item.product.Name === currentModalProduct.Name);
@@ -555,10 +589,9 @@
             updateCartUI();
             closeModal('product-modal');
             
-            // وميض أيقونة السلة للتنبيه
             const cartIcon = document.querySelector('.cart-icon-container');
             cartIcon.style.color = '#c5a059';
-            setTimeout(() => { cartIcon.style.color = 'inherit'; }, 300);
+            setTimeout(() => { cartIcon.style.color = '#000'; }, 500);
         }
 
         function updateCartUI() {
@@ -583,7 +616,7 @@
 
                 container.innerHTML += `
                     <div class="cart-item">
-                        <img src="${img}" class="cart-item-img">
+                        <img src="${img}" class="cart-item-img" onerror="this.src='https://via.placeholder.com/50'">
                         <div class="cart-info">
                             <div class="cart-item-title">${item.product.Name}</div>
                             <div class="cart-item-price">${item.product.Price}</div>
@@ -638,7 +671,6 @@
         }
 
         function initMap() {
-            // بغداد
             map = L.map('map').setView([33.3128, 44.3615], 10);
             
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -651,15 +683,18 @@
                 var position = marker.getLatLng();
                 userMapLocation = `https://www.google.com/maps?q=${position.lat},${position.lng}`;
                 document.getElementById('map-status').innerText = "✅ تم تحديد موقع الهدية";
+                document.getElementById('map-status').style.color = "green";
             });
             
             map.on('click', function(e) {
                 marker.setLatLng(e.latlng);
                 userMapLocation = `https://www.google.com/maps?q=${e.latlng.lat},${e.latlng.lng}`;
                 document.getElementById('map-status').innerText = "✅ تم تحديد موقع الهدية";
+                document.getElementById('map-status').style.color = "green";
             });
         }
 
+        // إرسال للواتساب (معدل ليشمل رابط الصورة)
         function sendToWhatsapp() {
             const name = document.getElementById('c-name').value;
             const phone = document.getElementById('c-phone').value;
@@ -677,6 +712,8 @@
 
             cart.forEach(item => {
                 message += `▪️ ${item.product.Name} (العدد: ${item.qty}) %0A`;
+                // إضافة رابط الصورة ليعرف الموظف المنتج
+                message += `🔗 صورة المنتج: ${item.product.Image} %0A%0A`;
             });
 
             message += `---------------------------%0A`;
